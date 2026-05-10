@@ -3,10 +3,90 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Site</title>
+  <title>Your Name</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Hello, World!</h1>
-  <p>Welcome to my site.</p>
+  <aside>
+    <div class="name">Your Name</div>
+    <nav>
+      <details open>
+        <summary>about</summary>
+        <ul>
+          <li><a href="#about">intro</a></li>
+          <li><a href="#now">now</a></li>
+          <li><a href="#contact">contact</a></li>
+        </ul>
+      </details>
+      <details open>
+        <summary>projects</summary>
+        <ul>
+          <li><a href="#project-one">project-one</a></li>
+          <li><a href="#project-two">project-two</a></li>
+          <li><a href="#project-three">project-three</a></li>
+        </ul>
+      </details>
+      <details open>
+        <summary>blog</summary>
+        <ul>
+          <li><a href="#post-1">post title one</a></li>
+          <li><a href="#post-2">post title two</a></li>
+          <li><a href="#post-3">post title three</a></li>
+        </ul>
+      </details>
+    </nav>
+    <div class="mobile-nav">
+      <a href="#about">about</a>
+      <a href="#projects">projects</a>
+      <a href="#blog">blog</a>
+    </div>
+    <div class="contact">
+      <a href="mailto:you@example.com">email</a>
+      <a href="#">github</a>
+    </div>
+  </aside>
+
+  <main>
+    <section id="about">
+      <h1>about</h1>
+      <p>A few sentences about yourself. Keep it short.</p>
+    </section>
+
+    <section id="projects">
+      <h1>projects</h1>
+      <ul>
+        <li>
+          <a href="#">project-one</a>
+          <span>— short description</span>
+        </li>
+        <li>
+          <a href="#">project-two</a>
+          <span>— short description</span>
+        </li>
+        <li>
+          <a href="#">project-three</a>
+          <span>— short description</span>
+        </li>
+      </ul>
+    </section>
+
+    <section id="blog">
+      <h1>blog</h1>
+      <ul>
+        <li>
+          <span class="date">2025-01-15</span>
+          <a href="#">Post title goes here</a>
+        </li>
+        <li>
+          <span class="date">2025-01-10</span>
+          <a href="#">Another post title</a>
+        </li>
+        <li>
+          <span class="date">2025-01-05</span>
+          <a href="#">Yet another post</a>
+        </li>
+      </ul>
+    </section>
+  </main>
 </body>
 </html>
