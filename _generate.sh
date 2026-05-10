@@ -30,9 +30,7 @@ SIDEBAR='<aside>
     <div class="section">
       <div class="section-label">notes</div>
       <ul>
-        <li><a href="/notes/2026-01-15.html">2026-01-15 post title one</a></li>
-        <li><a href="/notes/2026-01-10.html">2026-01-10 another post</a></li>
-        <li><a href="/notes/2026-01-05.html">2026-01-05 yet another post</a></li>
+        <li><a href="/notes/pdf2image.html">pdf2image</a></li>
       </ul>
     </div>
   </nav>
@@ -112,22 +110,10 @@ make_page "projects/project-three.html" \
   "project-three" \
   '  <p>short description of project three.</p>'
 
-make_page "notes/2026-01-15.html" \
-  'you are here: <a href="/notes/2026-01-15.html">notes</a> &gt; 2026-01-15' \
-  "post title one" \
-  '  <p><span class="date">2026-01-15</span></p>
-  <p>placeholder for the first post.</p>'
-
-make_page "notes/2026-01-10.html" \
-  'you are here: <a href="/notes/2026-01-15.html">notes</a> &gt; 2026-01-10' \
-  "another post" \
-  '  <p><span class="date">2026-01-10</span></p>
-  <p>placeholder for the second post.</p>'
-
-make_page "notes/2026-01-05.html" \
-  'you are here: <a href="/notes/2026-01-15.html">notes</a> &gt; 2026-01-05' \
-  "yet another post" \
-  '  <p><span class="date">2026-01-05</span></p>
-  <p>placeholder for the third post.</p>'
+make_page "notes/pdf2image.html" \
+  'you are here: <a href="/notes/pdf2image.html">notes</a> &gt; pdf2image' \
+  "pdf2image" \
+  '  <p><span class="date">2026-05-10</span></p>
+  <p>I have had more success making useful tools when I just convert PDFs to images. Frontier LLMs are still not great at working directly with PDFs in my experience, and it also makes for a snappier experience if you create HTML artifacts.</p>'
 
 echo "generated $(find . -name '*.html' -not -path './.git/*' | wc -l | tr -d ' ') pages"
