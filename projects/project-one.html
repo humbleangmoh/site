@@ -4,34 +4,34 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>project-one — humbleangmoh</title>
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
 <aside>
-  <div class="name"><a href="/">humbleangmoh</a></div>
+  <div class="name"><a href="../index.html">humbleangmoh</a></div>
 
   <nav>
     <div class="section">
       <div class="section-label">about</div>
       <ul>
-        <li><a href="/about/intro.html">intro</a></li>
-        <li><a href="/about/contact.html">contact</a></li>
+        <li><a href="../about/intro.html">intro</a></li>
+        <li><a href="../about/contact.html">contact</a></li>
       </ul>
     </div>
 
     <div class="section">
       <div class="section-label">projects</div>
       <ul>
-        <li><a href="/projects/project-one.html">project-one</a></li>
-        <li><a href="/projects/project-two.html">project-two</a></li>
-        <li><a href="/projects/project-three.html">project-three</a></li>
+        <li><a href="../projects/project-one.html">project-one</a></li>
+        <li><a href="../projects/project-two.html">project-two</a></li>
+        <li><a href="../projects/project-three.html">project-three</a></li>
       </ul>
     </div>
 
     <div class="section">
       <div class="section-label">notes</div>
       <ul>
-        <li><a href="/notes/placeholder.html">placeholder</a></li>
+        <li><a href="../notes/its-happening.html">260510 it's happening</a></li>
       </ul>
     </div>
   </nav>
@@ -42,13 +42,15 @@
   </div>
 </aside>
 <main>
-  <div class="breadcrumb">you are here: <a href="/projects/project-one.html">projects</a> &gt; project-one</div>
+  <div class="breadcrumb">you are here: <a href="../projects/project-one.html">projects</a> &gt; project-one</div>
   <h1>project-one</h1>
   <p>short description of project one.</p>
 </main>
 <script>
   document.querySelectorAll("aside a").forEach(function (a) {
-    if (a.getAttribute("href") === location.pathname) a.classList.add("active");
+    try {
+      if (new URL(a.href).pathname === location.pathname) a.classList.add("active");
+    } catch (e) {}
   });
 </script>
 </body>

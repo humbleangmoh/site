@@ -150,6 +150,22 @@ main a:hover {
   color: #888;
 }
 
+blockquote {
+  border-left: 2px solid #ddd;
+  padding-left: 1rem;
+  margin: 1rem 0 1.5rem;
+  color: #555;
+  font-style: italic;
+}
+
+blockquote p {
+  margin-bottom: 1rem;
+}
+
+blockquote p:last-child {
+  margin-bottom: 0;
+}
+
 @media (max-width: 700px) {
   body {
     flex-direction: column;
