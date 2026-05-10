@@ -114,6 +114,6 @@ make_page "notes/pdf2image.html" \
   'you are here: <a href="/notes/pdf2image.html">notes</a> &gt; pdf2image' \
   "pdf2image" \
   '  <p><span class="date">2026-05-10</span></p>
-  <p>I have had more success making useful tools when I just convert PDFs to images. Frontier LLMs are still not great at working directly with PDFs in my experience, and it also makes for a snappier experience if you create HTML artifacts.</p>'
+  <p>ive had more success making useful tools when i just convert pdfs to images - frontier llms are still not great at working idrectly with pdfs in my experience, and it also makes for a snappier experience if you create html artifacts</p>'
 
 echo "generated $(find . -name '*.html' -not -path './.git/*' | wc -l | tr -d ' ') pages"
