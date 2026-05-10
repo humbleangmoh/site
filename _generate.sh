@@ -30,7 +30,7 @@ SIDEBAR='<aside>
     <div class="section">
       <div class="section-label">notes</div>
       <ul>
-        <li><a href="/notes/pdf2image.html">pdf2image</a></li>
+        <li><a href="/notes/placeholder.html">placeholder</a></li>
       </ul>
     </div>
   </nav>
@@ -110,10 +110,9 @@ make_page "projects/project-three.html" \
   "project-three" \
   '  <p>short description of project three.</p>'
 
-make_page "notes/pdf2image.html" \
-  'you are here: <a href="/notes/pdf2image.html">notes</a> &gt; pdf2image' \
-  "pdf2image" \
-  '  <p><span class="date">2026-05-10</span></p>
-  <p>ive had more success making useful tools when i just convert pdfs to images - frontier llms are still not great at working directly with pdfs in my experience, and it also makes for a snappier experience if you create html artifacts</p>'
+make_page "notes/placeholder.html" \
+  'you are here: <a href="/notes/placeholder.html">notes</a> &gt; placeholder' \
+  "placeholder" \
+  '  <p>placeholder</p>'
 
 echo "generated $(find . -name '*.html' -not -path './.git/*' | wc -l | tr -d ' ') pages"
