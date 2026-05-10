@@ -7,14 +7,13 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 SIDEBAR='<aside>
-  <div class="name"><a href="/">humble angmoh</a></div>
+  <div class="name"><a href="/">humbleangmoh</a></div>
 
   <nav>
     <div class="section">
       <div class="section-label">about</div>
       <ul>
         <li><a href="/about/intro.html">intro</a></li>
-        <li><a href="/about/now.html">now</a></li>
         <li><a href="/about/contact.html">contact</a></li>
       </ul>
     </div>
@@ -62,7 +61,7 @@ make_page() {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${title} — humble angmoh</title>
+  <title>${title} — humbleangmoh</title>
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
@@ -82,18 +81,13 @@ HTML
 
 make_page "index.html" \
   "you are here: home" \
-  "humble angmoh" \
+  "humbleangmoh" \
   '  <p>welcome. use the sidebar to navigate.</p>'
 
 make_page "about/intro.html" \
   'you are here: <a href="/about/intro.html">about</a> &gt; intro' \
   "intro" \
-  '  <p>a few sentences about yourself. keep it short.</p>'
-
-make_page "about/now.html" \
-  'you are here: <a href="/about/intro.html">about</a> &gt; now' \
-  "now" \
-  '  <p>what you are focused on right now. inspired by /now pages.</p>'
+  '  <p>A random professional (property development) working with AI tools.</p>'
 
 make_page "about/contact.html" \
   'you are here: <a href="/about/intro.html">about</a> &gt; contact' \
