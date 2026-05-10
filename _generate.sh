@@ -38,7 +38,7 @@ SIDEBAR='<aside>
   </nav>
 
   <div class="contact">
-    <a href="mailto:you@example.com">email</a>
+    <a href="mailto:humbleangmoh@gmail.com">email</a>
     <a href="https://github.com/humbleangmoh">github</a>
   </div>
 </aside>'
@@ -93,7 +93,7 @@ make_page "about/contact.html" \
   'you are here: <a href="/about/intro.html">about</a> &gt; contact' \
   "contact" \
   '  <ul>
-    <li>email — <a href="mailto:you@example.com">you@example.com</a></li>
+    <li>email — <a href="mailto:humbleangmoh@gmail.com">humbleangmoh@gmail.com</a></li>
     <li>github — <a href="https://github.com/humbleangmoh">humbleangmoh</a></li>
   </ul>'
 
