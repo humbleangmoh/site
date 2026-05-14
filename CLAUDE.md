@@ -45,3 +45,14 @@ Active. First real post ("it's happening", 2026-05-10) shipped recently. WIP acr
 ## Related
 
 - `~/0.projects/260505-whatsapp-viewer/` — shares the typographic / monospace CSS approach
+
+## Orchestration
+
+This project's slug is `humbleangmoh`. Registered in `mission_control.db`.
+
+- `PROJECT.html` at this directory is **auto-generated** by `~/infra/scripts/build_project_html.py` on SessionEnd. Don't hand-edit it — changes will be overwritten.
+- Sessions in this dir auto-log to `mission_control.db` via the `auto_devlog.py` SessionEnd hook.
+- Cross-project view at <http://localhost:3000> when the dashboard is running (start from `~/0.projects/260510-mission-control/code/` via `npm run dev`).
+- G Drive mirror at `~/My Drive/0.projects-mirror/humbleangmoh/` (read-only from other devices).
+
+See `~/CLAUDE.md` for the full Mission Control architecture.
