@@ -259,6 +259,10 @@ main {
 .desktop-only { display: block; }
 .mobile-only { display: none; }
 @media (max-width: 700px) {
+  /* Safety net — clip anything that still tries to overflow horizontally
+     (eg. wide images, stray inline styles), so the page never gets pushed
+     wider than the viewport on phones. */
+  html, body { overflow-x: hidden; }
   main { padding: var(--line-height) 1ch calc(var(--line-height) * 1.5); }
   .grid { gap: calc(var(--line-height) * 0.75); }
   .overview, .card { padding: calc(var(--line-height) * 0.5) 1ch; }
@@ -267,10 +271,14 @@ main {
   /* Toggle table ↔ list for the per-person view. */
   .desktop-only { display: none; }
   .sender-list.mobile-only { display: block; }
-  /* Slimmer vertical-chart axes so monthly bars get more pixels. */
+  /* Slimmer vertical-chart axes so monthly bars get more pixels.
+     Per-stack min-width: 1px (down from 2px) so 120-month timelines fit
+     in any column without forcing the grid wider than the viewport. */
   .bars-v-grid { gap: 4px 0.5ch; }
   .bars-v-yaxis { font-size: 0.625rem; }
-  .bars-v-area { gap: 1px; }
+  .bars-v-area { gap: 1px; min-width: 0; }
+  .bars-v-stack, .bars-v-seg { min-width: 1px; }
+  .plot { min-width: 0; }
   /* Topics: tighter grid columns so the bar isn't crushed. */
   .topics-list { grid-template-columns: minmax(10ch, 14ch) 1fr 5ch; column-gap: 0.6ch; font-size: 0.75rem; }
   .method-list > li { padding-left: 2.5ch; }
@@ -328,13 +336,16 @@ main {
 .bars-v { display: block; }
 .bars-v-grid {
   display: grid;
-  grid-template-columns: max-content 1fr;
+  /* minmax(0, 1fr) — without the 0, the flex chart inside reports its
+     intrinsic min-width (sum of all bars + gaps) and forces the column
+     wider than its container, breaking layout on narrow viewports. */
+  grid-template-columns: max-content minmax(0, 1fr);
   gap: 4px 1ch;
   align-items: stretch;
 }
 /* Dual-axis variant: left axis | bars | right axis. */
 .bars-v-grid-dual {
-  grid-template-columns: max-content 1fr max-content;
+  grid-template-columns: max-content minmax(0, 1fr) max-content;
 }
 .bars-v-yaxis-right { text-align: left; }
 /* SVG overlay (dotted totals line) sits on top of the stacked bars. */
