@@ -491,50 +491,64 @@ main {
   color: var(--text-color);
 }
 
-/* Mobile sender list (editorial layout) — populated by renderSenderTable.
-   Hidden on desktop; shown via .mobile-only / .desktop-only below. */
+/* Mobile sender list — editorial layout, populated by renderSenderTable.
+   Each row: [swatch] name + headline tail on top, 3×2 stats grid beneath.
+   Hidden on desktop via .desktop-only / .mobile-only below. */
 .sender-list { display: none; }
 .person-row {
-  padding: calc(var(--line-height) / 2) 0;
-  border-bottom: 1px dashed var(--border-color);
+  padding: calc(var(--line-height) / 1.5) 0;
 }
-.person-row:last-child { border-bottom: none; }
+.person-row + .person-row { border-top: 1px solid var(--border-color); }
 .person-row.person-total {
-  border-top: var(--border-thickness) solid var(--border-color);
-  border-bottom: none;
-  margin-top: calc(var(--line-height) / 2);
-  padding-top: calc(var(--line-height) / 2);
+  border-top: var(--border-thickness) solid var(--text-color);
+  margin-top: calc(var(--line-height) / 3);
 }
 .person-head {
   display: flex;
-  align-items: baseline;
-  gap: 0.7ch;
+  align-items: center;
+  gap: 0.75ch;
   font-size: 0.9375rem;
   font-variant-numeric: tabular-nums;
+  margin-bottom: calc(var(--line-height) / 2);
 }
 .person-swatch {
   width: 2.5ch;
-  height: 0.9rem;
+  height: 1rem;
   background: var(--accent);
   flex-shrink: 0;
-  align-self: center;
+  border-radius: 1px;
 }
+/* Total row uses an invisible swatch element so the "Total" label aligns
+   horizontally with Dewey / Louie / Huey names above. */
+.person-swatch-blank { background: transparent; }
 .person-row .person-name { font-weight: var(--font-weight-medium); }
 .person-row .person-tail {
   margin-left: auto;
   color: var(--text-color-alt);
   font-size: 0.8125rem;
 }
-.person-detail {
-  padding-left: calc(2.5ch + 0.7ch);
+.person-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: calc(var(--line-height) / 2) 1ch;
+  padding-left: calc(2.5ch + 0.75ch);
+}
+.person-stats * + * { margin-top: 0; }
+.person-stat { display: flex; flex-direction: column; min-width: 0; }
+.person-stat-label {
+  font-size: 0.625rem;
   color: var(--text-color-alt);
-  font-size: 0.75rem;
-  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+}
+.person-stat-value {
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.2;
   margin-top: 2px;
 }
-/* Invisible swatch keeps the Total row's name horizontally aligned with
-   Dewey / Louie / Huey rows above. */
-.person-swatch-blank { background: transparent; }
 
 footer {
   margin-top: calc(var(--line-height) * 2);

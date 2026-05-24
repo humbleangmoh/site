@@ -289,35 +289,62 @@ function renderSenderTable(stats) {
   // Mobile-only person list — same data, editorial layout. Shown at narrow
   // viewports; the desktop <table> is hidden via .desktop-only / .mobile-only.
   if (list) {
-    list.innerHTML = stats.senders.map((s) => {
-      const wordsPerDay = s.words / rateDays;
-      const sharePct = totalMessages ? (s.messages / totalMessages) * 100 : 0;
-      const color = colorFor(s.name);
-      const detail = [
-        `${fmtNum(s.words)} words`,
-        `${fmtNum(Math.round(wordsPerDay))}/day`,
-        `${s.avg_words} avg`,
-        `${fmtNum(s.media)} media`,
-        `${fmtNum(s.questions)} questions`,
-        `${fmtDuration(s.median_response_sec)} median reply`,
-      ].join(" · ");
+    const stat = (label, value) =>
+      `<div class="person-stat"><span class="person-stat-label">${label}</span><span class="person-stat-value">${value}</span></div>`;
+
+    const personRow = ({ name, color, isTotal, messages, words, wordsPerDay, avgWords, media, questions, medianReply, sharePct }) => {
+      const tail = sharePct != null
+        ? `${fmtNum(messages)} msgs · ${sharePct.toFixed(0)}%`
+        : `${fmtNum(messages)} msgs`;
+      const swatchClass = isTotal ? "person-swatch person-swatch-blank" : "person-swatch";
+      const rowClass = isTotal ? "person-row person-total" : "person-row";
       return `
-        <div class="person-row" style="--accent:${color}">
+        <div class="${rowClass}" style="--accent:${color}">
           <div class="person-head">
-            <span class="person-swatch" aria-hidden="true"></span>
-            <span class="person-name">${escapeHtml(s.name)}</span>
-            <span class="person-tail">${fmtNum(s.messages)} msgs · ${sharePct.toFixed(0)}%</span>
+            <span class="${swatchClass}" aria-hidden="true"></span>
+            <span class="person-name">${escapeHtml(name)}</span>
+            <span class="person-tail">${tail}</span>
           </div>
-          <div class="person-detail">${detail}</div>
+          <div class="person-stats">
+            ${stat("words", fmtNum(words))}
+            ${stat("w/day", fmtNum(Math.round(wordsPerDay)))}
+            ${stat("avg/msg", avgWords)}
+            ${stat("media", fmtNum(media))}
+            ${stat("questions", fmtNum(questions))}
+            ${stat("median reply", medianReply)}
+          </div>
         </div>`;
-    }).join("") + `
-      <div class="person-row person-total">
-        <div class="person-head">
-          <span class="person-swatch person-swatch-blank" aria-hidden="true"></span>
-          <span class="person-name">Total</span>
-          <span class="person-tail">${fmtNum(t.messages)} msgs · ${fmtNum(t.words)} words</span>
-        </div>
-      </div>`;
+    };
+
+    const senderRows = stats.senders.map((s) => personRow({
+      name: s.name,
+      color: colorFor(s.name),
+      isTotal: false,
+      messages: s.messages,
+      words: s.words,
+      wordsPerDay: s.words / rateDays,
+      avgWords: s.avg_words,
+      media: s.media,
+      questions: s.questions,
+      medianReply: fmtDuration(s.median_response_sec),
+      sharePct: totalMessages ? (s.messages / totalMessages) * 100 : null,
+    })).join("");
+
+    const totalRow = personRow({
+      name: "Total",
+      color: "transparent",
+      isTotal: true,
+      messages: t.messages,
+      words: t.words,
+      wordsPerDay: t.words / rateDays,
+      avgWords,
+      media: t.media,
+      questions: t.questions,
+      medianReply: "—",
+      sharePct: null,
+    });
+
+    list.innerHTML = senderRows + totalRow;
   }
 }
 
