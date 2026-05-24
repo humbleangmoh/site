@@ -253,6 +253,29 @@ main {
   .span-2 { grid-column: span 1; }
 }
 
+/* Mobile (phone) — editorial layout. Sender table becomes a person list;
+   charts keep their desktop structure but get tighter padding so the bars
+   inside have more pixels to render. */
+.desktop-only { display: block; }
+.mobile-only { display: none; }
+@media (max-width: 700px) {
+  main { padding: var(--line-height) 1ch calc(var(--line-height) * 1.5); }
+  .grid { gap: calc(var(--line-height) * 0.75); }
+  .overview, .card { padding: calc(var(--line-height) * 0.5) 1ch; }
+  .card h3 { font-size: 0.8125rem; }
+  .card .muted { font-size: 0.75rem; }
+  /* Toggle table ↔ list for the per-person view. */
+  .desktop-only { display: none; }
+  .sender-list.mobile-only { display: block; }
+  /* Slimmer vertical-chart axes so monthly bars get more pixels. */
+  .bars-v-grid { gap: 4px 0.5ch; }
+  .bars-v-yaxis { font-size: 0.625rem; }
+  .bars-v-area { gap: 1px; }
+  /* Topics: tighter grid columns so the bar isn't crushed. */
+  .topics-list { grid-template-columns: minmax(10ch, 14ch) 1fr 5ch; column-gap: 0.6ch; font-size: 0.75rem; }
+  .method-list > li { padding-left: 2.5ch; }
+}
+
 .plot { margin: 0; color: var(--text-color); font-size: 0.8125rem; }
 .plot * + * { margin-top: 0; }
 
@@ -456,6 +479,49 @@ main {
   font-weight: var(--font-weight-medium);
   color: var(--text-color);
 }
+
+/* Mobile sender list (editorial layout) — populated by renderSenderTable.
+   Hidden on desktop; shown via .mobile-only / .desktop-only below. */
+.sender-list { display: none; }
+.person-row {
+  padding: calc(var(--line-height) / 2) 0;
+  border-bottom: 1px dashed var(--border-color);
+}
+.person-row:last-child { border-bottom: none; }
+.person-row.person-total {
+  border-top: var(--border-thickness) solid var(--border-color);
+  border-bottom: none;
+  margin-top: calc(var(--line-height) / 2);
+  padding-top: calc(var(--line-height) / 2);
+}
+.person-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7ch;
+  font-size: 0.9375rem;
+  font-variant-numeric: tabular-nums;
+}
+.person-swatch {
+  width: 2.5ch;
+  height: 0.9rem;
+  background: var(--accent);
+  flex-shrink: 0;
+  align-self: center;
+}
+.person-row .person-name { font-weight: var(--font-weight-medium); }
+.person-row .person-tail {
+  margin-left: auto;
+  color: var(--text-color-alt);
+  font-size: 0.8125rem;
+}
+.person-detail {
+  padding-left: calc(2.5ch + 0.7ch);
+  color: var(--text-color-alt);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  margin-top: 2px;
+}
+.person-row.person-total .person-head .person-name { padding-left: 0; }
 
 footer {
   margin-top: calc(var(--line-height) * 2);

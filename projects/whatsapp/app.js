@@ -246,7 +246,10 @@ function renderTimelineDualAxis(targetId, byBarCounts, senderInfo, opts = {}) {
 function renderSenderTable(stats) {
   const tbody = document.querySelector("#sender-table tbody");
   const tfoot = document.querySelector("#sender-table tfoot");
+  const list = document.getElementById("sender-list");
   const rateDays = stats.data_days || stats.span_days || 1;
+  const totalMessages = stats.total_messages || stats.senders.reduce((a, s) => a + s.messages, 0);
+
   tbody.innerHTML = stats.senders.map((s) => {
     const wordsPerDay = s.words / rateDays;
     const color = colorFor(s.name);
@@ -282,6 +285,39 @@ function renderSenderTable(stats) {
       <td>${fmtNum(t.questions)}</td>
       <td>—</td>
     </tr>`;
+
+  // Mobile-only person list — same data, editorial layout. Shown at narrow
+  // viewports; the desktop <table> is hidden via .desktop-only / .mobile-only.
+  if (list) {
+    list.innerHTML = stats.senders.map((s) => {
+      const wordsPerDay = s.words / rateDays;
+      const sharePct = totalMessages ? (s.messages / totalMessages) * 100 : 0;
+      const color = colorFor(s.name);
+      const detail = [
+        `${fmtNum(s.words)} words`,
+        `${fmtNum(Math.round(wordsPerDay))}/day`,
+        `${s.avg_words} avg`,
+        `${fmtNum(s.media)} media`,
+        `${fmtNum(s.questions)} questions`,
+        `${fmtDuration(s.median_response_sec)} median reply`,
+      ].join(" · ");
+      return `
+        <div class="person-row" style="--accent:${color}">
+          <div class="person-head">
+            <span class="person-swatch" aria-hidden="true"></span>
+            <span class="person-name">${escapeHtml(s.name)}</span>
+            <span class="person-tail">${fmtNum(s.messages)} msgs · ${sharePct.toFixed(0)}%</span>
+          </div>
+          <div class="person-detail">${detail}</div>
+        </div>`;
+    }).join("") + `
+      <div class="person-row person-total">
+        <div class="person-head">
+          <span class="person-name">Total</span>
+          <span class="person-tail">${fmtNum(t.messages)} msgs · ${fmtNum(t.words)} words</span>
+        </div>
+      </div>`;
+  }
 }
 
 function renderShareChart(stats) {
