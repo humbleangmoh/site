@@ -313,6 +313,7 @@ function renderSenderTable(stats) {
     }).join("") + `
       <div class="person-row person-total">
         <div class="person-head">
+          <span class="person-swatch person-swatch-blank" aria-hidden="true"></span>
           <span class="person-name">Total</span>
           <span class="person-tail">${fmtNum(t.messages)} msgs · ${fmtNum(t.words)} words</span>
         </div>

@@ -532,7 +532,9 @@ main {
   line-height: 1.5;
   margin-top: 2px;
 }
-.person-row.person-total .person-head .person-name { padding-left: 0; }
+/* Invisible swatch keeps the Total row's name horizontally aligned with
+   Dewey / Louie / Huey rows above. */
+.person-swatch-blank { background: transparent; }
 
 footer {
   margin-top: calc(var(--line-height) * 2);
@@ -609,4 +611,19 @@ footer {
   font-size: 0.6875rem;
   padding-top: calc(var(--line-height) / 2);
   border-top: var(--border-thickness) solid var(--border-color);
+}
+
+/* ─── Mobile chart overrides ──────────────────────────────────────────
+   These have to sit AFTER the desktop .bars-v-* rules above (CSS cascade
+   on equal specificity: later wins). The earlier @media (max-width: 700px)
+   block handles layout/typography; this one handles chart-internal sizing
+   so the 120-month timeline fits in any column without overflowing. */
+@media (max-width: 700px) {
+  .bars-v-area { gap: 1px; min-width: 0; }
+  .bars-v-stack, .bars-v-seg { min-width: 1px; }
+  .bars-v-xaxis-row { gap: 1px; min-width: 0; }
+  .bars-v-xtick { min-width: 1px; }
+  /* Push the right axis labels a hair away from the bars so the rightmost
+     bars don't visually touch the "3,000" / "1,500" / "0" text. */
+  .bars-v-yaxis-right { padding-left: 0.4ch; }
 }
