@@ -3,49 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>humbleangmoh — humbleangmoh</title>
+  <title>projects</title>
+  <script>
+    (function () {
+      var saved = localStorage.getItem("theme");
+      if (saved === "dark" || saved === "light") {
+        document.documentElement.dataset.theme = saved;
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="reset.css">
+  <link rel="stylesheet" href="monospace.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<aside>
-  <div class="name"><a href="index.html">humbleangmoh</a></div>
-
-  <nav>
-    <div class="section">
-      <div class="section-label">about</div>
-      <ul>
-        <li><a href="about/contact.html">contact</a></li>
-      </ul>
-    </div>
-
-    <div class="section">
-      <div class="section-label">projects</div>
-      <ul>
-        <li><a href="projects/project-one.html">project-one</a></li>
-        <li><a href="projects/project-two.html">project-two</a></li>
-        <li><a href="projects/project-three.html">project-three</a></li>
-      </ul>
-    </div>
-
-    <div class="section">
-      <div class="section-label">notes</div>
-      <ul>
-        <li><a href="notes/its-happening.html">note-one</a></li>
-      </ul>
-    </div>
-  </nav>
-</aside>
 <main>
-  <div class="breadcrumb">you are here: home</div>
-  <h1>humbleangmoh</h1>
-  <p>welcome. use the sidebar to navigate.</p>
+  <h1>projects</h1>
+  <ul class="projects">
+    <li><a href="projects/whatsapp/">10 years of whatsapp messages</a></li>
+  </ul>
+  <div class="contact">
+    <a href="mailto:humbleangmoh@gmail.com">email</a>
+    <button id="theme-toggle" type="button" aria-label="Toggle theme">◐</button>
+  </div>
 </main>
-<script>
-  document.querySelectorAll("aside a").forEach(function (a) {
-    try {
-      if (new URL(a.href).pathname === location.pathname) a.classList.add("active");
-    } catch (e) {}
-  });
-</script>
+<script src="theme.js"></script>
 </body>
 </html>

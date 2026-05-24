@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>10 years of messages between 3 friends · humbleangmoh.xyz</title>
+  <script>
+    (function () {
+      var saved = localStorage.getItem('theme');
+      if (saved === 'dark' || saved === 'light') {
+        document.documentElement.dataset.theme = saved;
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="../../reset.css" />
+  <link rel="stylesheet" href="../../monospace.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main>
+    <p class="breadcrumb"><a href="../../index.html">← projects</a></p>
+
+    <section class="overview">
+      <div class="overview-head">
+        <h2>10 years of messages between 3 friends</h2>
+        <button id="theme-toggle" type="button" aria-label="Toggle theme">◐</button>
+      </div>
+      <nav id="chat-nav" class="chat-nav"></nav>
+
+      <div class="method">
+        <h3 class="method-heading">how this was made</h3>
+        <div class="method-body">
+          <p class="muted">Built with Claude Code over several iterations. The pipeline today:</p>
+          <ol class="method-list">
+            <li>Parse raw WhatsApp <code>.txt</code> exports into a per-message data blob; sender names aliased.</li>
+            <li>Claude Sonnet reads the chat in 100-message windows to find conversation boundaries — about 1,860 conversations across ten years.</li>
+            <li>Stratify-sample 200 conversations, have Sonnet draft a topic taxonomy from the sample, hand-edit it once, then lock it (12 categories × 75 subtopics).</li>
+            <li>Tag each conversation against the locked taxonomy via roughly 3,000 prompt-cached Sonnet calls.</li>
+            <li>Short reactions ("lol", "yeah", "haha") inherit their conversation's topic instead of being tagged in isolation.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card span-2">
+        <h3>per-person activity</h3>
+        <p class="muted">message volume, words written and average length per person</p>
+        <div class="table-wrap">
+          <table id="sender-table" class="data-table">
+            <thead>
+              <tr>
+                <th>person</th>
+                <th>messages</th>
+                <th>words</th>
+                <th>w/day</th>
+                <th>avg/msg</th>
+                <th>media</th>
+                <th>questions</th>
+                <th>median reply</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot></tfoot>
+          </table>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>word share</h3>
+        <p class="muted">who dominates the conversation, weighted by words</p>
+        <div class="plot" id="chart-share"></div>
+      </article>
+
+      <article class="card">
+        <h3>who starts chats</h3>
+        <p class="muted">first message of a new calendar day counts as a fresh start</p>
+        <div class="plot" id="chart-starts"></div>
+      </article>
+
+      <article class="card span-2">
+        <h3>activity over time</h3>
+        <p class="muted">share per person (bars, left axis) · total messages (dotted line, right axis), monthly</p>
+        <div class="plot" id="chart-timeline"></div>
+      </article>
+
+      <article class="card">
+        <h3>hour of day</h3>
+        <p class="muted">when this chat is most alive</p>
+        <div class="plot" id="chart-hour"></div>
+      </article>
+
+      <article class="card">
+        <h3>day of week</h3>
+        <p class="muted">mon → sun</p>
+        <div class="plot" id="chart-dow"></div>
+      </article>
+
+      <article class="card span-2" id="topics-card">
+        <h3>topics</h3>
+        <p class="muted">LLM-classified categories — word-share per person. messages may carry multiple tags.</p>
+        <div class="topics-list" id="topics-list"></div>
+      </article>
+    </section>
+
+    <footer class="muted"><span id="footer-meta"></span></footer>
+  </main>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+  <script src="../../theme.js"></script>
+</body>
+</html>

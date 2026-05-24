@@ -1,0 +1,535 @@
+/* Layered on top of reset.css + monospace.css.
+   Overrides the vendored monospace-web defaults for a softer, smaller, more
+   consistent dashboard look. Manual [data-theme] wins over prefers-color-scheme
+   via specificity. */
+
+:root {
+  font-size: 14px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  --border-thickness: 1px;
+}
+
+@media screen and (max-width: 480px) {
+  :root { font-size: 13px; }
+}
+
+/* OS-following defaults (no manual theme set) */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --text-color: #1f1f1f;
+    --text-color-alt: #6b6b6b;
+    --background-color: #fafaf7;
+    --background-color-alt: #f0efea;
+    --border-color: #d6d4cd;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --text-color: #e6e6e6;
+    --text-color-alt: #8a8a8a;
+    --background-color: #0f0f10;
+    --background-color-alt: #1a1a1c;
+    --border-color: #2c2c2e;
+  }
+}
+
+/* Manual override */
+:root[data-theme="light"] {
+  --text-color: #1f1f1f;
+  --text-color-alt: #6b6b6b;
+  --background-color: #fafaf7;
+  --background-color-alt: #f0efea;
+  --border-color: #d6d4cd;
+}
+:root[data-theme="dark"] {
+  --text-color: #e6e6e6;
+  --text-color-alt: #8a8a8a;
+  --background-color: #0f0f10;
+  --background-color-alt: #1a1a1c;
+  --border-color: #2c2c2e;
+}
+
+/* Override monospace.css border defaults to use the softer --border-color */
+hr:after,
+table th, table td,
+details,
+input, button, textarea {
+  border-color: var(--border-color);
+}
+
+/* Override Monospace Web 80ch body for the dashboard. */
+body { max-width: 100%; padding: 0; }
+body * + * { margin-top: var(--line-height); }
+
+/* Center the dashboard column inside the page; cap width so wide screens
+   don't stretch the bars uncomfortably. */
+main {
+  max-width: 120ch;
+  margin: 0 auto;
+  padding: var(--line-height) 2ch calc(var(--line-height) * 2);
+}
+
+/* Back-to-projects link sits above the overview block. */
+.breadcrumb {
+  margin: 0 0 calc(var(--line-height) / 2);
+  font-size: 0.8125rem;
+}
+.breadcrumb a {
+  color: var(--text-color-alt);
+  text-decoration: none;
+}
+.breadcrumb a:hover { color: var(--text-color); text-decoration: underline; }
+
+/* Chat selector (hidden when only one chat exists). */
+.chat-nav { display: flex; flex-wrap: wrap; gap: 2ch; margin: 0; align-items: center; font-size: 0.8125rem; }
+.chat-nav button {
+  height: auto;
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-transform: none;
+  font: inherit;
+  color: var(--text-color-alt);
+  width: auto;
+}
+.chat-nav button:hover { background: transparent; color: var(--text-color); text-decoration: underline; }
+.chat-nav button.active {
+  color: var(--text-color);
+  font-weight: var(--font-weight-medium);
+}
+.chat-nav button.active::before { content: "▸ "; }
+
+.overview-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1ch;
+  border-bottom: var(--border-thickness) solid var(--border-color);
+  padding-bottom: calc(var(--line-height) / 2);
+  margin: 0;
+}
+.overview-head h2 {
+  font-size: 1.125rem;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height);
+  margin: 0;
+  color: var(--text-color);
+  border: none;
+  padding: 0;
+}
+.overview-head > * + * { margin-top: 0; }
+.overview-head #theme-toggle {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  height: auto;
+  width: auto;
+  color: var(--text-color-alt);
+  text-transform: none;
+  cursor: pointer;
+  font: inherit;
+}
+.overview-head #theme-toggle:hover { color: var(--text-color); background: transparent; }
+.muted { color: var(--text-color-alt); }
+
+/* "How this was made" block inside the overview section. */
+.method {
+  margin: 0;
+}
+.method-heading {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-color-alt);
+  font-weight: var(--font-weight-medium);
+  margin: 0 0 calc(var(--line-height) / 2);
+  border: none;
+  padding: 0;
+}
+.method-body { font-size: 0.8125rem; }
+.method-body * + * { margin-top: calc(var(--line-height) / 2); }
+.method-list {
+  list-style: none;
+  counter-reset: method;
+  padding: 0;
+  margin: calc(var(--line-height) / 4) 0 0;
+}
+.method-list > li {
+  counter-increment: method;
+  position: relative;
+  padding-left: 3ch;
+  margin-top: calc(var(--line-height) / 3);
+  line-height: var(--line-height);
+}
+.method-list > li::before {
+  content: counter(method);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2ch;
+  color: var(--text-color-alt);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.method-body code {
+  font-size: 0.8125rem;
+  padding: 0 0.3ch;
+  background: var(--background-color-alt);
+  border-radius: 1px;
+}
+
+/* Section frame: overview + cards share the same border treatment. */
+.overview,
+.card {
+  border: var(--border-thickness) solid var(--border-color);
+  padding: calc(var(--line-height) * 0.75) 1ch;
+  margin: 0;
+}
+.overview > * + * { margin-top: calc(var(--line-height) / 2); }
+
+/* Per-sender data table base — shared across all data tables in the dashboard. */
+.data-table {
+  width: 100%;
+  table-layout: fixed;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  border-collapse: collapse;
+  margin: 0;
+}
+.data-table * + * { margin-top: 0; }
+.data-table th,
+.data-table td {
+  padding: calc(var(--line-height) / 3) 0.75ch;
+  text-align: center;
+  vertical-align: top;
+  overflow: hidden;
+  word-wrap: break-word;
+  border: none;
+}
+.data-table th {
+  font-weight: var(--font-weight-medium);
+  color: var(--text-color-alt);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.6875rem;
+  border-bottom: var(--border-thickness) solid var(--border-color);
+  white-space: nowrap;
+}
+.data-table td {
+  color: var(--text-color);
+}
+.cell-sub {
+  font-size: 0.6875rem;
+  color: var(--text-color-alt);
+  line-height: 1.25;
+  margin-top: 2px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--line-height);
+}
+.card > * + * { margin-top: calc(var(--line-height) / 2); }
+.card h3 {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0;
+  font-weight: var(--font-weight-bold);
+  border-bottom: var(--border-thickness) solid var(--border-color);
+  padding-bottom: calc(var(--line-height) / 2);
+}
+.card .muted { margin-top: calc(var(--line-height) / 2); font-size: 0.8125rem; }
+.span-2 { grid-column: span 2; }
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr; }
+  .span-2 { grid-column: span 1; }
+}
+
+.plot { margin: 0; color: var(--text-color); font-size: 0.8125rem; }
+.plot * + * { margin-top: 0; }
+
+/* ─── Horizontal bars (word share, conversation starts) ─────────────── */
+.bars-h { display: grid; gap: calc(var(--line-height) / 2); }
+.bar-row {
+  display: grid;
+  grid-template-columns: minmax(7ch, max-content) 1fr max-content max-content;
+  gap: 1ch;
+  align-items: center;
+  font-variant-numeric: tabular-nums;
+}
+.bar-name { font-weight: var(--font-weight-medium); }
+.bar-track {
+  position: relative;
+  height: calc(var(--line-height) * 0.9);
+  background: transparent;
+  border-radius: 1px;
+  overflow: visible;
+}
+.bar-fill {
+  position: relative;
+  height: 100%;
+  border-radius: 1px;
+  transition: width 0.18s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 0.6ch;
+  box-sizing: border-box;
+}
+/* Flat pastel fills — every colored bar surface uses a single solid color.
+   No texture, so edges are crisp at any pixel size and the eye reads the
+   per-sender color identity (Dewey blue / Louie rust / Huey olive) directly. */
+.bar-fill,
+.bars-v-seg,
+.topic-seg,
+.sender-swatch {
+  background-color: var(--fill-color);
+}
+.bar-value { text-align: right; color: var(--text-color); min-width: 6ch; }
+.bar-pct {
+  text-align: right;
+  color: var(--text-color-alt);
+  font-size: 0.75rem;
+  min-width: 5ch;
+}
+
+/* ─── Vertical bars (timeline, hour, dow) ───────────────────────────── */
+.bars-v { display: block; }
+.bars-v-grid {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 1ch;
+  align-items: stretch;
+}
+/* Dual-axis variant: left axis | bars | right axis. */
+.bars-v-grid-dual {
+  grid-template-columns: max-content 1fr max-content;
+}
+.bars-v-yaxis-right { text-align: left; }
+/* SVG overlay (dotted totals line) sits on top of the stacked bars. */
+.bars-v-area-overlay { position: relative; }
+.bars-v-overlay-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  color: var(--text-color);
+  overflow: visible;
+}
+.bars-v-overlay-svg .overlay-line-halo {
+  fill: none;
+  stroke: var(--background-color);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.bars-v-overlay-svg .overlay-line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-dasharray: 2.5 2;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.bars-v-yaxis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 0.6875rem;
+  color: var(--text-color-alt);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.y-tick { line-height: 1; }
+.bars-v-area {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 0 1px;
+  border-bottom: var(--border-thickness) solid var(--border-color);
+  border-left: var(--border-thickness) solid var(--border-color);
+  background:
+    repeating-linear-gradient(
+      to top,
+      transparent 0,
+      transparent calc(50% - 1px),
+      var(--background-color-alt) calc(50% - 1px),
+      var(--background-color-alt) 50%
+    );
+}
+/* Stacked vertical bars: column-reverse so first DOM child is at the bottom
+   of the stack; each .bars-v-seg gets its sender's flat fill color. */
+.bars-v-stack {
+  flex: 1 1 0;
+  min-width: 2px;
+  height: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+.bars-v-seg {
+  width: 100%;
+  min-height: 0;
+  transition: height 0.18s ease;
+}
+/* :last-child is the visual top of the stack (because of column-reverse). */
+.bars-v-stack > .bars-v-seg:last-child {
+  border-radius: 1px 1px 0 0;
+}
+.bars-v-xaxis-row {
+  display: flex;
+  gap: 2px;
+  font-size: 0.6875rem;
+  color: var(--text-color-alt);
+  font-variant-numeric: tabular-nums;
+}
+.bars-v-xtick {
+  flex: 1 1 0;
+  min-width: 2px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.bars-v-xaxis-row.overflow-labels .bars-v-xtick {
+  overflow: visible;
+}
+.bars-v-xaxis-row.with-ticks {
+  padding-top: 4px;
+  position: relative;
+}
+.bars-v-xaxis-row.with-ticks .bars-v-xtick.has-label::before {
+  content: '';
+  display: block;
+  width: 1px;
+  height: 4px;
+  background: var(--text-color-alt);
+  margin: -4px auto 2px;
+  position: relative;
+  top: -1px;
+}
+
+.table-wrap { overflow: visible; }
+
+/* Sender table: shares .data-table base; only column widths, first-cell
+   composition (swatch + name), and totals row live here. */
+#sender-table th:first-child,
+#sender-table td:first-child {
+  width: 16%;
+  text-align: left;
+  padding-left: 1.5ch;
+}
+#sender-table th:not(:first-child),
+#sender-table td:not(:first-child) {
+  width: calc(84% / 7);
+}
+.sender-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75ch;
+}
+.sender-swatch {
+  display: inline-block;
+  width: 2.5ch;
+  height: 0.9rem;
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+.sender-name {
+  color: var(--text-color);
+  font-weight: var(--font-weight-medium);
+}
+/* Totals row sits in <tfoot>; only a top border separates it from the body
+   so the card frame closes out the bottom without doubling up. */
+#sender-table tfoot td {
+  border-top: var(--border-thickness) solid var(--border-color);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-color);
+}
+
+footer {
+  margin-top: calc(var(--line-height) * 2);
+  padding-top: var(--line-height);
+  border-top: var(--border-thickness) solid var(--border-color);
+  text-align: center;
+  color: var(--text-color-alt);
+  font-size: 0.8125rem;
+}
+
+/* ─── LLM-classified topics: expandable category bars ───────────────── */
+.topics-list {
+  display: grid;
+  grid-template-columns: minmax(14ch, 20ch) 1fr 6ch;
+  column-gap: 1ch;
+  row-gap: calc(var(--line-height) / 3);
+  align-items: center;
+  font-size: 0.8125rem;
+}
+.topics-list * + * { margin-top: 0; }
+.topic-row { display: contents; }
+.topic-label {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  height: auto;
+  width: auto;
+  text-align: left;
+  color: var(--text-color);
+  cursor: pointer;
+  font: inherit;
+  text-transform: none;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5ch;
+}
+.topic-label:hover:not(:disabled) { color: var(--text-color); text-decoration: underline; }
+.topic-label-leaf { cursor: default; color: var(--text-color); }
+.topic-caret { color: var(--text-color-alt); width: 1ch; display: inline-block; }
+.topic-sub-label {
+  padding-left: 2.5ch;
+  color: var(--text-color-alt);
+  font-size: 0.75rem;
+}
+.topic-bar {
+  display: flex;
+  height: calc(var(--line-height) * 1.1);
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--background-color-alt);
+  min-width: 4px;
+}
+.topic-sub .topic-bar { height: calc(var(--line-height) * 0.8); }
+.topic-seg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.625rem;
+  color: rgba(255, 255, 255, 0.98);
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.topic-total {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-color-alt);
+  font-size: 0.75rem;
+}
+.topics-footnote {
+  grid-column: 1 / -1;
+  font-size: 0.6875rem;
+  padding-top: calc(var(--line-height) / 2);
+  border-top: var(--border-thickness) solid var(--border-color);
+}

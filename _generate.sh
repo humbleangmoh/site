@@ -1,72 +1,123 @@
 #!/usr/bin/env bash
-# Regenerates all site pages from one shared sidebar template.
+# Regenerates all site pages from shared templates.
 # Run: bash _generate.sh
-# Edit the SIDEBAR and the make_page calls below to add/remove pages.
+# Edit PROJECTS below to add/remove project pages; rerun to regenerate.
 
 set -euo pipefail
 cd "$(dirname "$0")"
 
-SIDEBAR='<aside>
-  <div class="name"><a href="/index.html">humbleangmoh</a></div>
+# ---------- ordered list of projects ----------
+# slug : display name
+# Plain project pages — `<slug>:<display name>`. Each generates a stub
+# `projects/<slug>.html` from the template below and appears in the homepage list.
+PROJECTS=()
 
-  <nav>
-    <div class="section">
-      <div class="section-label">about</div>
-      <ul>
-        <li><a href="/about/intro.html">intro</a></li>
-        <li><a href="/about/contact.html">contact</a></li>
-      </ul>
-    </div>
+# Subfolder projects (interactive apps). Generator only adds the link to the
+# homepage list and the sidebar of stub pages — it does NOT touch the contents
+# of `projects/<slug>/`. Each subfolder is hand-maintained.
+SUBFOLDER_PROJECTS=(
+  "whatsapp:10 years of whatsapp messages"
+)
 
-    <div class="section">
-      <div class="section-label">projects</div>
-      <ul>
-        <li><a href="/projects/project-one.html">project-one</a></li>
-        <li><a href="/projects/project-two.html">project-two</a></li>
-        <li><a href="/projects/project-three.html">project-three</a></li>
-      </ul>
-    </div>
+THEME_INIT='<script>
+    (function () {
+      var saved = localStorage.getItem("theme");
+      if (saved === "dark" || saved === "light") {
+        document.documentElement.dataset.theme = saved;
+      }
+    })();
+  </script>'
 
-    <div class="section">
-      <div class="section-label">notes</div>
-      <ul>
-        <li><a href="/notes/its-happening.html">260510 it'\''s happening</a></li>
-      </ul>
-    </div>
-  </nav>
+# Build the homepage projects <ul>. Subfolder projects come first.
+home_projects_ul() {
+  local prefix="$1"  # path prefix from current page to root (always "" for index)
+  echo '  <ul class="projects">'
+  for entry in "${SUBFOLDER_PROJECTS[@]}"; do
+    local slug="${entry%%:*}"
+    local name="${entry##*:}"
+    echo "    <li><a href=\"${prefix}projects/${slug}/\">${name}</a></li>"
+  done
+  for entry in "${PROJECTS[@]+"${PROJECTS[@]}"}"; do
+    local slug="${entry%%:*}"
+    local name="${entry##*:}"
+    echo "    <li><a href=\"${prefix}projects/${slug}.html\">${name}</a></li>"
+  done
+  echo '  </ul>'
+}
 
-  <div class="contact">
-    <a href="mailto:humbleangmoh@gmail.com">email</a>
-    <a href="https://github.com/humbleangmoh">github</a>
-  </div>
-</aside>'
+# Build the sidebar project <ul>, marking the active slug. Subfolder projects
+# appear first (same order as the homepage list).
+sidebar_projects_ul() {
+  local prefix="$1"
+  local active_slug="$2"
+  echo '      <ul>'
+  for entry in "${SUBFOLDER_PROJECTS[@]}"; do
+    local slug="${entry%%:*}"
+    local name="${entry##*:}"
+    echo "        <li><a href=\"${prefix}projects/${slug}/\">${name}</a></li>"
+  done
+  for entry in "${PROJECTS[@]+"${PROJECTS[@]}"}"; do
+    local slug="${entry%%:*}"
+    local name="${entry##*:}"
+    if [[ "$slug" == "$active_slug" ]]; then
+      echo "        <li><a class=\"active\" href=\"${prefix}projects/${slug}.html\">${name}</a></li>"
+    else
+      echo "        <li><a href=\"${prefix}projects/${slug}.html\">${name}</a></li>"
+    fi
+  done
+  echo '      </ul>'
+}
 
-ACTIVE_SCRIPT='<script>
-  document.querySelectorAll("aside a").forEach(function (a) {
-    try {
-      if (new URL(a.href).pathname === location.pathname) a.classList.add("active");
-    } catch (e) {}
-  });
-</script>'
-
-make_page() {
+# Compute "../" prefix from depth so file:// previews work too.
+path_prefix() {
   local file="$1"
-  local breadcrumb="$2"
-  local title="$3"
-  local content="$4"
-
-  # Compute relative-path prefix from directory depth so file:// previews work.
-  # /index.html  -> "" (depth 0)
-  # /notes/x.html -> "../" (depth 1)
   local depth=$(awk -F/ '{print NF-1}' <<< "$file")
   local prefix=""
   local i
   for ((i=0; i<depth; i++)); do prefix="${prefix}../"; done
+  printf "%s" "$prefix"
+}
 
-  # Rewrite absolute hrefs (href="/...") to relative for both sidebar and breadcrumb.
-  local sidebar_rel="${SIDEBAR//href=\"\//href=\"${prefix}}"
-  local breadcrumb_rel="${breadcrumb//href=\"\//href=\"${prefix}}"
+make_home() {
+  local file="index.html"
+  local prefix=""
+  local projects_block
+  projects_block=$(home_projects_ul "$prefix")
+  cat > "$file" <<HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>projects</title>
+  ${THEME_INIT}
+  <link rel="stylesheet" href="${prefix}reset.css">
+  <link rel="stylesheet" href="${prefix}monospace.css">
+  <link rel="stylesheet" href="${prefix}styles.css">
+</head>
+<body>
+<main>
+  <h1>projects</h1>
+${projects_block}
+  <div class="contact">
+    <a href="mailto:humbleangmoh@gmail.com">email</a>
+    <button id="theme-toggle" type="button" aria-label="Toggle theme">◐</button>
+  </div>
+</main>
+<script src="${prefix}theme.js"></script>
+</body>
+</html>
+HTML
+}
 
+make_project() {
+  local slug="$1"
+  local title="$2"
+  local file="projects/${slug}.html"
+  local prefix
+  prefix=$(path_prefix "$file")
+  local nav_block
+  nav_block=$(sidebar_projects_ul "$prefix" "$slug")
   mkdir -p "$(dirname "$file")"
   cat > "$file" <<HTML
 <!DOCTYPE html>
@@ -74,76 +125,43 @@ make_page() {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${title} — humbleangmoh</title>
+  <title>${title}</title>
+  ${THEME_INIT}
+  <link rel="stylesheet" href="${prefix}reset.css">
+  <link rel="stylesheet" href="${prefix}monospace.css">
   <link rel="stylesheet" href="${prefix}styles.css">
 </head>
-<body>
-${sidebar_rel}
+<body class="has-sidebar">
+<aside>
+  <nav>
+    <div class="section">
+      <div class="section-label"><a href="${prefix}index.html">projects</a></div>
+${nav_block}
+    </div>
+  </nav>
+  <div class="contact">
+    <a href="mailto:humbleangmoh@gmail.com">email</a>
+    <button id="theme-toggle" type="button" aria-label="Toggle theme">◐</button>
+  </div>
+</aside>
 <main>
-  <div class="breadcrumb">${breadcrumb_rel}</div>
   <h1>${title}</h1>
-${content}
 </main>
-${ACTIVE_SCRIPT}
+<script src="${prefix}theme.js"></script>
 </body>
 </html>
 HTML
 }
 
-# ---------- pages ----------
+# ---------- generate ----------
 
-make_page "index.html" \
-  "you are here: home" \
-  "humbleangmoh" \
-  '  <p>welcome. use the sidebar to navigate.</p>'
+make_home
 
-make_page "about/intro.html" \
-  'you are here: <a href="/about/intro.html">about</a> &gt; intro' \
-  "intro" \
-  '  <p>A random professional (property development) working with AI tools.</p>'
+for entry in "${PROJECTS[@]+"${PROJECTS[@]}"}"; do
+  slug="${entry%%:*}"
+  name="${entry##*:}"
+  make_project "$slug" "$name"
+done
 
-make_page "about/contact.html" \
-  'you are here: <a href="/about/intro.html">about</a> &gt; contact' \
-  "contact" \
-  '  <ul>
-    <li>email — <a href="mailto:humbleangmoh@gmail.com">humbleangmoh@gmail.com</a></li>
-    <li>twitter — <a href="https://x.com/humbleangmoh">humbleangmoh</a></li>
-    <li>github — <a href="https://github.com/humbleangmoh">humbleangmoh</a></li>
-  </ul>'
-
-make_page "projects/project-one.html" \
-  'you are here: <a href="/projects/project-one.html">projects</a> &gt; project-one' \
-  "project-one" \
-  '  <p>short description of project one.</p>'
-
-make_page "projects/project-two.html" \
-  'you are here: <a href="/projects/project-one.html">projects</a> &gt; project-two' \
-  "project-two" \
-  '  <p>short description of project two.</p>'
-
-make_page "projects/project-three.html" \
-  'you are here: <a href="/projects/project-one.html">projects</a> &gt; project-three' \
-  "project-three" \
-  '  <p>short description of project three.</p>'
-
-make_page "notes/its-happening.html" \
-  "you are here: <a href=\"/notes/its-happening.html\">notes</a> &gt; 260510 it's happening" \
-  "it's happening" \
-  "  <p><span class=\"date\">2026-05-10</span></p>
-
-  <p>4 years ago I wrote this on a forum thread about AI automation:</p>
-
-  <blockquote>
-    <p>I work in AEC (Architecture, Engineering, Construction). The vast majority of people in the industry are barely aware of recent advances in AI. But should they actually be worried about their job prospects over the next decade? I get the sense that this crowd would say \"Yes!\".</p>
-    <p>I can only speak from my own experience, but I find it genuinely hard to picture. If nothing else, because anything you try to do in meatspace takes forever. There are plenty of solid 'digital' tools that have existed for 10+ years and still haven't gained any traction in the industry. I know AGI is different, but it's worth mentioning how slow things change, and how much of a grinding bureaucracy most companies are.</p>
-  </blockquote>
-
-  <p>In the last 6 months AI has gone from, to me, having fringe usefulness, to something that actually makes me more productive at work. I can officially say 'it's happening' - and not just for software engineers.</p>
-
-  <p>I work in project management of real-estate development projects, and I think AI tools have arrived as a genuine disruptive force. The disruption hasn't happened yet - but it's coming.</p>
-
-  <p>This site is for me to post and share some of my own noodling around with these tools, as a random worker whose daily tasks cover a lot of what the economy 'is'.</p>
-
-  <p>Please <a href=\"mailto:humbleangmoh@gmail.com\">email</a> or <a href=\"https://x.com/humbleangmoh\">tweet</a> to get in touch</p>"
-
-echo "generated $(find . -name '*.html' -not -path './.git/*' | wc -l | tr -d ' ') pages"
+count=$(find . -name '*.html' -not -path './.git/*' -not -name 'PROJECT.html' | wc -l | tr -d ' ')
+echo "generated ${count} pages"

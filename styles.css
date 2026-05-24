@@ -1,193 +1,229 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* humbleangmoh.xyz — minimalist projects-only design.
+   Layered on top of reset.css + monospace.css.
+   Manual theme override wins over @media prefers-color-scheme via specificity. */
+
+:root {
+  --background-color: #fafafa;
+  --background-color-alt: #eeeeee;
+  --text-color: #1a1a1a;
+  --text-color-alt: #666;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: #1a1a1a;
+    --background-color-alt: #222222;
+    --text-color: #fafafa;
+    --text-color-alt: #aaa;
+  }
+}
+:root[data-theme="light"] {
+  --background-color: #fafafa;
+  --background-color-alt: #eeeeee;
+  --text-color: #1a1a1a;
+  --text-color-alt: #666;
+}
+:root[data-theme="dark"] {
+  --background-color: #1a1a1a;
+  --background-color-alt: #222222;
+  --text-color: #fafafa;
+  --text-color-alt: #aaa;
 }
 
+/* Old-school Courier New, overriding monospace.css's JetBrains Mono. */
+html, body, :root {
+  font-family: "Courier New", Courier, monospace;
+}
+
+/* Two layout modes: with sidebar (project pages, body.has-sidebar) and
+   centered single column (homepage, default). */
+
 body {
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
-  font-size: 14px;
-  line-height: 1.6;
-  color: #222;
-  background: #fff;
-  display: flex;
+  max-width: 100%;
+  width: 100%;
+  padding: 0;
   min-height: 100vh;
 }
 
+/* Homepage: centered column. */
+body:not(.has-sidebar) {
+  display: flex;
+  justify-content: center;
+}
+body:not(.has-sidebar) main {
+  max-width: 60ch;
+  width: 100%;
+  padding: calc(var(--line-height) * 3) 4ch calc(var(--line-height) * 2);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Project pages: sidebar + main. */
+body.has-sidebar {
+  display: flex;
+  align-items: stretch;
+}
+
 aside {
-  width: 240px;
-  padding: 2rem;
-  border-right: 1px solid #ddd;
-  position: fixed;
+  width: 30ch;
+  flex: 0 0 30ch;
+  padding: calc(var(--line-height) * 2) 2ch var(--line-height);
+  border-right: var(--border-thickness) solid var(--text-color);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
   height: 100vh;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
 }
 
-.name {
-  font-weight: 600;
-  margin-bottom: 2rem;
-}
+/* Neutralize global `* + *` margin inside the sidebar so list items don't spread. */
+aside * + * { margin-top: 0; }
 
-.name a {
-  color: #222;
+aside nav { display: flex; flex-direction: column; gap: var(--line-height); }
+
+/* Headers (sidebar section label, main h1): bold + thick underline, body size,
+   lowercase. Hierarchy from weight + underline + whitespace, no size shift. */
+.section-label,
+main h1 {
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: lowercase;
+  border-bottom: 1.5px solid currentColor;
+  padding-bottom: 2px;
+  margin: 0 0 calc(var(--line-height) * 1.5);
+  display: block;
+  width: max-content;
+  max-width: 100%;
   text-decoration: none;
 }
 
-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.section-label {
-  font-weight: 600;
-  margin-bottom: 0.35rem;
-  color: #222;
-}
-
-nav ul {
-  list-style: none;
-  padding-left: 1rem;
-}
-
-nav li {
-  margin-bottom: 0.25rem;
-}
-
-nav a {
-  color: #666;
-  font-size: 13px;
+/* Section label is a link (to /); make sure it stays styled like a header. */
+.section-label a,
+.section-label a:hover {
+  color: var(--text-color);
   text-decoration: none;
+  font-weight: 700;
 }
 
-nav a:hover {
-  color: #222;
+aside ul { padding-left: 2ch; margin: 0; list-style-type: square; }
+aside li { margin: 0; padding: 0; }
+aside li + li { margin-top: 0; }
+
+aside a {
+  color: var(--text-color);
+  text-decoration: underline;
+}
+aside a:hover {
+  color: var(--text-color);
+  text-decoration: underline;
+}
+/* Active sidebar project link: bold + underline. */
+aside a.active {
+  font-weight: 700;
   text-decoration: underline;
 }
 
-nav a.active {
-  color: #222;
-  font-weight: 600;
-}
-
-nav a.active::before {
-  content: "▸ ";
-  color: #222;
-  margin-left: -0.85rem;
-}
-
+/* Footer in sidebar AND homepage main. */
 .contact {
   margin-top: auto;
-  padding-top: 1.5rem;
+  padding-top: calc(var(--line-height) * 2);
   display: flex;
-  gap: 1rem;
+  gap: 2ch;
+  align-items: center;
+  flex-wrap: wrap;
+  color: var(--text-color-alt);
+  font-size: 0.9rem;
 }
-
 .contact a {
-  color: #666;
-  font-size: 13px;
-}
-
-main {
-  margin-left: 240px;
-  padding: 2rem 3rem;
-  max-width: 760px;
-  width: 100%;
-}
-
-.breadcrumb {
-  color: #888;
-  font-size: 13px;
-  margin-bottom: 2rem;
-}
-
-.breadcrumb a {
-  color: #888;
-  text-decoration: none;
-}
-
-.breadcrumb a:hover {
-  color: #222;
+  color: var(--text-color-alt);
   text-decoration: underline;
 }
-
-h1 {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  text-transform: lowercase;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 0.5rem;
+.contact a:hover {
+  color: var(--text-color);
 }
 
-main p {
-  color: #444;
-  margin-bottom: 1rem;
+/* Homepage: vertically + horizontally center content; pin footer to bottom. */
+body:not(.has-sidebar) main {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
 }
-
-main ul {
+body:not(.has-sidebar) main h1 {
+  margin-left: auto;
+  margin-right: auto;
+}
+body:not(.has-sidebar) main ul.projects {
   list-style: none;
-  margin-bottom: 1rem;
+  padding: 0;
+}
+body:not(.has-sidebar) main .contact {
+  position: absolute;
+  bottom: calc(var(--line-height) * 2);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding-top: 0;
+  justify-content: center;
 }
 
-main li {
-  margin-bottom: 0.5rem;
+/* Theme toggle: Monospace Web styles all <button> with borders/uppercase — undo. */
+#theme-toggle {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  font: inherit;
+  color: var(--text-color-alt);
+  text-transform: none;
+  height: auto;
+  width: auto;
+  line-height: 1;
+}
+#theme-toggle:hover {
+  background: transparent;
+  color: var(--text-color);
 }
 
-main a {
-  color: #222;
+/* Main content (project pages). */
+body.has-sidebar main {
+  flex: 1;
+  padding: calc(var(--line-height) * 2) 4ch var(--line-height);
+  max-width: 80ch;
 }
 
-main a:hover {
+/* Project list on homepage. */
+main ul.projects {
+  padding-left: 2ch;
+  margin: 0 0 var(--line-height);
+  list-style-type: square;
+}
+main ul.projects li { margin: 0; padding: 0; }
+main ul.projects li + li { margin-top: 0; }
+main ul.projects a {
+  color: var(--text-color);
   text-decoration: underline;
 }
 
-.date {
-  display: inline-block;
-  width: 100px;
-  color: #888;
-}
-
-blockquote {
-  border-left: 2px solid #ddd;
-  padding-left: 1rem;
-  margin: 1rem 0 1.5rem;
-  color: #555;
-  font-style: italic;
-}
-
-blockquote p {
-  margin-bottom: 1rem;
-}
-
-blockquote p:last-child {
-  margin-bottom: 0;
-}
-
+/* Mobile */
 @media (max-width: 700px) {
-  body {
-    flex-direction: column;
-  }
-
-  aside {
-    position: static;
+  body.has-sidebar { flex-direction: column; }
+  body.has-sidebar aside {
     width: 100%;
+    flex: none;
     height: auto;
+    position: static;
     border-right: none;
-    border-bottom: 1px solid #ddd;
-    padding: 1.5rem;
+    border-bottom: var(--border-thickness) solid var(--text-color);
+    padding: var(--line-height) 2ch;
   }
-
-  .contact {
-    margin-top: 1.5rem;
-    padding-top: 0;
-  }
-
-  main {
-    margin-left: 0;
-    padding: 1.5rem;
+  body.has-sidebar main {
     max-width: none;
+    padding: var(--line-height) 2ch;
+  }
+  body:not(.has-sidebar) main {
+    padding: calc(var(--line-height) * 2) 2ch var(--line-height);
   }
 }
